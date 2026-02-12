@@ -505,13 +505,33 @@ export function createHeaderLogoAndSocialTemplate(): ContentBlock[] {
 }
 
 export function createHeaderLogoAndNavigationTemplate(): ContentBlock[] {
-  const nav = createNavigationBlock();
-  nav.items = [
+  const logoBlock: LogoBlock = {
+    type: "logo",
+    id: generateId(),
+    src: "",
+    alt: "Logo",
+    width: 149,
+    height: 36,
+    widthUnit: "px",
+    alignment: "center",
+    padding: 20,
+    margin: 0,
+    borderWidth: 0,
+    borderColor: "#000000",
+    borderRadius: 0,
+    visibility: "all",
+    displayMode: "inline",
+  };
+
+  const navBlock = createNavigationBlock();
+  navBlock.items = [
     { label: "Order now", link: "#" },
     { label: "Contact us", link: "#" },
     { label: "Find a shop", link: "#" },
   ];
-  return [createLogoBlock(), nav, createDividerBlock()];
+  (navBlock as any).displayMode = "inline";
+
+  return [logoBlock, navBlock];
 }
 
 export function createFooterWithSocialTemplate(): ContentBlock[] {

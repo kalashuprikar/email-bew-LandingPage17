@@ -202,6 +202,7 @@ export interface NavigationBlock {
   borderColor: string;
   borderRadius: number;
   visibility: "all" | "desktop" | "mobile";
+  displayMode?: "inline" | "block";
 }
 
 export interface ButtonBlock {
