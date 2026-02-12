@@ -16,38 +16,103 @@ export const StatsBlockComponent: React.FC<StatsBlockComponentProps> = ({
   isSelected,
   onUpdate,
 }) => {
-  const [editMode, setEditMode] = useState<{ id: string; field: "value" | "label" } | null>(null);
+  const [editMode, setEditMode] = useState<string | null>(null);
   const [hoveredFieldId, setHoveredFieldId] = useState<string | null>(null);
   const [focusedFieldId, setFocusedFieldId] = useState<string | null>(null);
 
-  const handleUpdateStat = (id: string, field: "value" | "label", content: string) => {
-    const updatedStats = block.stats.map((s) =>
-      s.id === id ? { ...s, [field]: content } : s
-    );
+  const handleUpdateValue = (statId: string, valueId: string, content: string) => {
+    const updatedStats = block.stats.map((s) => {
+      if (s.id === statId) {
+        const values = s.values || [{ id: `${s.id}-val`, content: s.value }];
+        const updatedValues = values.map((v) =>
+          v.id === valueId ? { ...v, content } : v
+        );
+        return { ...s, values: updatedValues, value: updatedValues[0]?.content || "" };
+      }
+      return s;
+    });
     onUpdate({ ...block, stats: updatedStats });
   };
 
-  const handleDuplicateStat = (id: string) => {
-    const statToDuplicate = block.stats.find((s) => s.id === id);
-    if (statToDuplicate) {
-      const newStats = [...block.stats];
-      const index = block.stats.findIndex((s) => s.id === id);
-      newStats.splice(index + 1, 0, {
-        ...statToDuplicate,
-        id: generateId(),
-      });
-      onUpdate({ ...block, stats: newStats });
-    }
+  const handleDuplicateValue = (statId: string, valueId: string) => {
+    const updatedStats = block.stats.map((s) => {
+      if (s.id === statId) {
+        const values = s.values || [{ id: `${s.id}-val`, content: s.value }];
+        const index = values.findIndex((v) => v.id === valueId);
+        if (index > -1) {
+          const newValues = [...values];
+          newValues.splice(index + 1, 0, {
+            id: generateId(),
+            content: values[index].content,
+          });
+          return { ...s, values: newValues };
+        }
+      }
+      return s;
+    });
+    onUpdate({ ...block, stats: updatedStats });
   };
 
-  const handleDeleteStat = (id: string) => {
-    const newStats = block.stats.filter((s) => s.id !== id);
-    onUpdate({ ...block, stats: newStats });
+  const handleDeleteValue = (statId: string, valueId: string) => {
+    const updatedStats = block.stats.map((s) => {
+      if (s.id === statId) {
+        const values = s.values || [{ id: `${s.id}-val`, content: s.value }];
+        const newValues = values.filter((v) => v.id !== valueId);
+        return { ...s, values: newValues, value: newValues[0]?.content || "" };
+      }
+      return s;
+    });
+    onUpdate({ ...block, stats: updatedStats });
     setEditMode(null);
     setFocusedFieldId(null);
   };
 
-  // No local createId needed, using generateId from utils
+  const handleUpdateLabel = (statId: string, labelId: string, content: string) => {
+    const updatedStats = block.stats.map((s) => {
+      if (s.id === statId) {
+        const labels = s.labels || [{ id: `${s.id}-lab`, content: s.label }];
+        const updatedLabels = labels.map((l) =>
+          l.id === labelId ? { ...l, content } : l
+        );
+        return { ...s, labels: updatedLabels, label: updatedLabels[0]?.content || "" };
+      }
+      return s;
+    });
+    onUpdate({ ...block, stats: updatedStats });
+  };
+
+  const handleDuplicateLabel = (statId: string, labelId: string) => {
+    const updatedStats = block.stats.map((s) => {
+      if (s.id === statId) {
+        const labels = s.labels || [{ id: `${s.id}-lab`, content: s.label }];
+        const index = labels.findIndex((l) => l.id === labelId);
+        if (index > -1) {
+          const newLabels = [...labels];
+          newLabels.splice(index + 1, 0, {
+            id: generateId(),
+            content: labels[index].content,
+          });
+          return { ...s, labels: newLabels };
+        }
+      }
+      return s;
+    });
+    onUpdate({ ...block, stats: updatedStats });
+  };
+
+  const handleDeleteLabel = (statId: string, labelId: string) => {
+    const updatedStats = block.stats.map((s) => {
+      if (s.id === statId) {
+        const labels = s.labels || [{ id: `${s.id}-lab`, content: s.label }];
+        const newLabels = labels.filter((l) => l.id !== labelId);
+        return { ...s, labels: newLabels, label: newLabels[0]?.content || "" };
+      }
+      return s;
+    });
+    onUpdate({ ...block, stats: updatedStats });
+    setEditMode(null);
+    setFocusedFieldId(null);
+  };
 
   const containerStyle = {
     width: `${block.width}${block.widthUnit}`,
@@ -64,7 +129,7 @@ export const StatsBlockComponent: React.FC<StatsBlockComponentProps> = ({
     onDelete: () => void;
   }) => {
     return (
-      <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-1 shadow-md mt-2 w-fit mx-auto z-[110]">
+      <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-1 shadow-md mt-1 w-fit mx-auto z-[110]">
         <Button
           variant="ghost"
           size="sm"
@@ -98,14 +163,14 @@ export const StatsBlockComponent: React.FC<StatsBlockComponentProps> = ({
         isSelected ? "ring-2 ring-valasys-orange" : ""
       }`}
     >
-      {block.stats.map((stat, index) => {
+      {block.stats.map((stat, sIndex) => {
         const borderStyle =
-          index !== block.stats.length - 1
+          sIndex !== block.stats.length - 1
             ? { borderRight: "1px solid #e0e0e0" }
             : {};
         
-        const isHovered = hoveredFieldId === stat.id;
-        const isFocused = focusedFieldId === stat.id;
+        const values = stat.values || (stat.value ? [{ id: `${stat.id}-val`, content: stat.value }] : []);
+        const labels = stat.labels || (stat.label ? [{ id: `${stat.id}-lab`, content: stat.label }] : []);
 
         return (
           <div
@@ -118,77 +183,134 @@ export const StatsBlockComponent: React.FC<StatsBlockComponentProps> = ({
               ...borderStyle,
               position: "relative",
             }}
-            onMouseEnter={() => setHoveredFieldId(stat.id)}
-            onMouseLeave={() => setHoveredFieldId(null)}
           >
-            <div
-              className="relative p-2 rounded transition-all"
-              style={{
-                border: isFocused
-                  ? "2px solid rgb(255, 106, 0)"
-                  : isHovered
-                  ? "2px dotted rgb(255, 106, 0)"
-                  : "2px solid transparent",
-              }}
-              onClick={() => setFocusedFieldId(stat.id)}
-            >
-              {/* Value Field */}
-              <div className="mb-2">
-                {editMode?.id === stat.id && editMode.field === "value" ? (
-                  <Input
-                    value={stat.value}
-                    onChange={(e) => handleUpdateStat(stat.id, "value", e.target.value)}
-                    onBlur={() => setEditMode(null)}
-                    autoFocus
-                    className="text-center font-bold text-lg"
-                  />
-                ) : (
-                  <h3
-                    style={{
-                      margin: 0,
-                      fontSize: `${stat.fontSize}px`,
-                      fontWeight: "bold",
-                      color: stat.textColor,
-                      cursor: "pointer",
-                    }}
-                    onDoubleClick={() => setEditMode({ id: stat.id, field: "value" })}
-                  >
-                    {stat.value}
-                  </h3>
-                )}
-              </div>
+            {/* Values */}
+            <div className="space-y-2 mb-2">
+              {values.map((v) => {
+                const isHovered = hoveredFieldId === v.id;
+                const isFocused = focusedFieldId === v.id;
+                const isEditing = editMode === v.id;
 
-              {/* Label Field */}
-              <div>
-                {editMode?.id === stat.id && editMode.field === "label" ? (
-                  <Input
-                    value={stat.label}
-                    onChange={(e) => handleUpdateStat(stat.id, "label", e.target.value)}
-                    onBlur={() => setEditMode(null)}
-                    autoFocus
-                    className="text-center text-sm"
-                  />
-                ) : (
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: `${stat.labelFontSize}px`,
-                      color: "#666",
-                      cursor: "pointer",
-                    }}
-                    onDoubleClick={() => setEditMode({ id: stat.id, field: "label" })}
+                return (
+                  <div
+                    key={v.id}
+                    className="relative"
+                    onMouseEnter={() => setHoveredFieldId(v.id)}
+                    onMouseLeave={() => setHoveredFieldId(null)}
                   >
-                    {stat.label}
-                  </p>
-                )}
-              </div>
+                    {isEditing ? (
+                      <div className="space-y-1">
+                        <Input
+                          value={v.content}
+                          onChange={(e) => handleUpdateValue(stat.id, v.id, e.target.value)}
+                          onBlur={() => setEditMode(null)}
+                          autoFocus
+                          className="text-center font-bold text-lg"
+                        />
+                        <FieldToolbar
+                          onCopy={() => handleDuplicateValue(stat.id, v.id)}
+                          onDelete={() => handleDeleteValue(stat.id, v.id)}
+                        />
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <h3
+                          style={{
+                            margin: 0,
+                            fontSize: `${stat.fontSize}px`,
+                            fontWeight: "bold",
+                            color: stat.textColor,
+                            cursor: "pointer",
+                            border: isFocused
+                              ? "2px solid rgb(255, 106, 0)"
+                              : isHovered
+                              ? "2px dotted rgb(255, 106, 0)"
+                              : "2px solid transparent",
+                          }}
+                          className="p-1 rounded transition-all"
+                          onClick={() => setFocusedFieldId(v.id)}
+                          onDoubleClick={() => {
+                            setEditMode(v.id);
+                            setFocusedFieldId(v.id);
+                          }}
+                        >
+                          {v.content}
+                        </h3>
+                        {isFocused && (
+                          <FieldToolbar
+                            onCopy={() => handleDuplicateValue(stat.id, v.id)}
+                            onDelete={() => handleDeleteValue(stat.id, v.id)}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
 
-              {isFocused && (
-                <FieldToolbar
-                  onCopy={() => handleDuplicateStat(stat.id)}
-                  onDelete={() => handleDeleteStat(stat.id)}
-                />
-              )}
+            {/* Labels */}
+            <div className="space-y-2">
+              {labels.map((l) => {
+                const isHovered = hoveredFieldId === l.id;
+                const isFocused = focusedFieldId === l.id;
+                const isEditing = editMode === l.id;
+
+                return (
+                  <div
+                    key={l.id}
+                    className="relative"
+                    onMouseEnter={() => setHoveredFieldId(l.id)}
+                    onMouseLeave={() => setHoveredFieldId(null)}
+                  >
+                    {isEditing ? (
+                      <div className="space-y-1">
+                        <Input
+                          value={l.content}
+                          onChange={(e) => handleUpdateLabel(stat.id, l.id, e.target.value)}
+                          onBlur={() => setEditMode(null)}
+                          autoFocus
+                          className="text-center text-sm"
+                        />
+                        <FieldToolbar
+                          onCopy={() => handleDuplicateLabel(stat.id, l.id)}
+                          onDelete={() => handleDeleteLabel(stat.id, l.id)}
+                        />
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: `${stat.labelFontSize}px`,
+                            color: "#666",
+                            cursor: "pointer",
+                            border: isFocused
+                              ? "2px solid rgb(255, 106, 0)"
+                              : isHovered
+                              ? "2px dotted rgb(255, 106, 0)"
+                              : "2px solid transparent",
+                          }}
+                          className="p-1 rounded transition-all"
+                          onClick={() => setFocusedFieldId(l.id)}
+                          onDoubleClick={() => {
+                            setEditMode(l.id);
+                            setFocusedFieldId(l.id);
+                          }}
+                        >
+                          {l.content}
+                        </p>
+                        {isFocused && (
+                          <FieldToolbar
+                            onCopy={() => handleDuplicateLabel(stat.id, l.id)}
+                            onDelete={() => handleDeleteLabel(stat.id, l.id)}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         );

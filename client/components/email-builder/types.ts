@@ -444,6 +444,8 @@ export interface StatsBlock {
     id: string;
     value: string;
     label: string;
+    values?: { id: string; content: string }[];
+    labels?: { id: string; content: string }[];
     fontSize: number;
     labelFontSize: number;
     textColor: string;

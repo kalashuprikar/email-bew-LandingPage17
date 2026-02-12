@@ -623,6 +623,8 @@ export function createStatsBlock() {
         id: generateId(),
         value: "4.8",
         label: "Average rating",
+        values: [{ id: generateId(), content: "4.8" }],
+        labels: [{ id: generateId(), content: "Average rating" }],
         fontSize: 28,
         labelFontSize: 14,
         textColor: "#000000",
@@ -632,6 +634,8 @@ export function createStatsBlock() {
         id: generateId(),
         value: "120",
         label: "Reviews",
+        values: [{ id: generateId(), content: "120" }],
+        labels: [{ id: generateId(), content: "Reviews" }],
         fontSize: 28,
         labelFontSize: 14,
         textColor: "#000000",
@@ -641,6 +645,8 @@ export function createStatsBlock() {
         id: generateId(),
         value: "200K",
         label: "Downloads",
+        values: [{ id: generateId(), content: "200K" }],
+        labels: [{ id: generateId(), content: "Downloads" }],
         fontSize: 28,
         labelFontSize: 14,
         textColor: "#000000",
@@ -1008,9 +1014,30 @@ export function renderBlockToHTML(block: ContentBlock): string {
             index !== statsBlock.stats.length - 1
               ? "border-right: 1px solid #e0e0e0;"
               : "";
+
+          const values =
+            stat.values ||
+            (stat.value ? [{ id: "val-0", content: stat.value }] : []);
+          const labels =
+            stat.labels ||
+            (stat.label ? [{ id: "lab-0", content: stat.label }] : []);
+
+          const valuesHtml = values
+            .map(
+              (v: any) =>
+                `<h3 style="margin: 0 0 8px 0; font-size: ${stat.fontSize}px; font-weight: bold; color: ${stat.textColor};">${v.content}</h3>`,
+            )
+            .join("");
+          const labelsHtml = labels
+            .map(
+              (l: any) =>
+                `<p style="margin: 0; font-size: ${stat.labelFontSize}px; color: #666;">${l.content}</p>`,
+            )
+            .join("");
+
           return `<div style="width: 33%; display: inline-block; vertical-align: top; text-align: center; padding: ${stat.padding}px; box-sizing: border-box; ${borderStyle}">
-              <h3 style="margin: 0 0 8px 0; font-size: ${stat.fontSize}px; font-weight: bold; color: ${stat.textColor};">${stat.value}</h3>
-              <p style="margin: 0; font-size: ${stat.labelFontSize}px; color: #666;">${stat.label}</p>
+              ${valuesHtml}
+              ${labelsHtml}
             </div>`;
         })
         .join("");
