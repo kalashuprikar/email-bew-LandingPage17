@@ -1,8 +1,10 @@
 import React from "react";
 import { useDrag, useDrop } from "react-dnd";
+import { Trash2 } from "lucide-react";
 import { ContentBlock } from "./types";
 import { BlockRenderer } from "./BlockRenderer";
 import { BlockActions } from "./BlockActions";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface DraggableBlockProps {
@@ -98,16 +100,37 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
         blockIndex={index}
       />
 
-      {(isSelected || isHovering) && !isPartOfInlineGroup && (
+      {(isHovering || isSelected) && (
         <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 z-[100] transition-all">
-          <BlockActions
-            block={block}
-            blockIndex={index}
-            totalBlocks={totalBlocks}
-            onAddBlock={onAddBlock}
-            onDuplicate={onDuplicate}
-            onDelete={() => onDelete(block.id)}
-          />
+          {isPartOfInlineGroup ? (
+            // Show only delete button for blocks in inline group
+            <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-lg">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 hover:bg-red-50 rounded-full"
+                onMouseDown={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(block.id);
+                }}
+                type="button"
+                title="Delete block"
+              >
+                <Trash2 className="w-4 h-4 text-red-600" />
+              </Button>
+            </div>
+          ) : (
+            <BlockActions
+              block={block}
+              blockIndex={index}
+              totalBlocks={totalBlocks}
+              onAddBlock={onAddBlock}
+              onDuplicate={onDuplicate}
+              onDelete={() => onDelete(block.id)}
+            />
+          )}
         </div>
       )}
     </div>
