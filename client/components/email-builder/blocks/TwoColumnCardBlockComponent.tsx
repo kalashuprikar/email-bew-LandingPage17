@@ -624,6 +624,32 @@ export const TwoColumnCardBlockComponent: React.FC<
     >
       <div className="flex gap-5">
         {block.cards.map((card, index) => {
+          const contentRef = useRef<HTMLDivElement>(null);
+          const [{ isOverContent }, dropContent] = useDrop(
+            () => ({
+              accept: ["block", "template"],
+              drop: (item: any) => {
+                if (item.blocks) {
+                  item.blocks.forEach((b: ContentBlock) => {
+                    handleAddBlockToCard(card.id, b);
+                  });
+                } else if (item.block) {
+                  handleAddBlockToCard(card.id, {
+                    ...item.block,
+                    id: `block-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                  });
+                }
+                return { handled: true };
+              },
+              collect: (monitor) => ({
+                isOverContent: !!monitor.isOver(),
+              }),
+            }),
+            [card.id]
+          );
+
+          dropContent(contentRef);
+
           const titles = useMemo(
             () =>
               card.titles ||
@@ -718,12 +744,16 @@ export const TwoColumnCardBlockComponent: React.FC<
 
               {/* Content Section - Droppable */}
               <div
-                className="flex-1 overflow-visible flex flex-col"
+                ref={contentRef}
+                className={`flex-1 overflow-visible flex flex-col transition-colors ${
+                  isOverContent ? "bg-orange-50" : "bg-white"
+                }`}
                 style={{
                   padding: `${Math.max(12, card.padding)}px`,
                   color: card.textColor,
                   margin: 0,
-                  border: "none",
+                  border: isOverContent ? "2px dashed rgb(255, 106, 0)" : "none",
+                  minHeight: "150px",
                 }}
               >
 
