@@ -169,11 +169,16 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
                     currentIndex++;
                   }
 
-                  // Determine layout direction based on block types
-                  const hasNavigation = inlineBlocks.some(b => b.type === "navigation");
-                  const flexDirection = hasNavigation ? "column" : "row";
-                  const justifyContent = hasNavigation ? "center" : "space-between";
-                  const alignItems = hasNavigation ? "center" : "center";
+                  // Determine layout direction based on alignment
+                  // If blocks have left/right alignment → horizontal layout
+                  // If blocks have center alignment → vertical layout
+                  const firstBlockAlignment = (inlineBlocks[0] as any).alignment;
+                  const hasLeftRightAlignment = inlineBlocks.some(b =>
+                    (b as any).alignment === "left" || (b as any).alignment === "right"
+                  );
+                  const flexDirection = hasLeftRightAlignment ? "row" : "column";
+                  const justifyContent = hasLeftRightAlignment ? "space-between" : "center";
+                  const alignItems = "center";
 
                   const groupId = `inline-group-${block.id}`;
                   const isGroupSelected = selectedInlineGroup === groupId;
@@ -204,10 +209,10 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
                         {inlineBlocks.map((inlineBlock, i) => (
                           <div
                             key={inlineBlock.id}
-                            className={hasNavigation ? "w-full" : "inline-block"}
+                            className={hasLeftRightAlignment ? "inline-block" : "w-full"}
                             onClick={(e) => e.stopPropagation()}
                             style={{
-                              display: hasNavigation ? "block" : "inline-block"
+                              display: hasLeftRightAlignment ? "inline-block" : "block"
                             }}
                           >
                             <DraggableBlock
