@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Copy, Trash2 } from "lucide-react";
+import { Copy, Trash2, GripHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FooterWithSocialBlock } from "../types";
 import { SocialBlockComponent } from "./SocialBlockComponent";
@@ -218,20 +218,10 @@ export const FooterWithSocialBlockComponent: React.FC<
             {selectedElement === "social" && (
               <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 bg-white rounded-full px-2 py-1 shadow-lg">
                 <button
-                  onClick={(e) => handleMoveSection("social", "up", e)}
-                  title="Move up"
-                  className="p-1.5 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                  disabled={sectionOrder.indexOf("social") === 0}
+                  title="Drag to reorder"
+                  className="p-1.5 text-gray-700 cursor-grab active:cursor-grabbing hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                 >
-                  ↑
-                </button>
-                <button
-                  onClick={(e) => handleMoveSection("social", "down", e)}
-                  title="Move down"
-                  className="p-1.5 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                  disabled={sectionOrder.indexOf("social") === sectionOrder.length - 1}
-                >
-                  ↓
+                  <GripHorizontal className="w-4 h-4" />
                 </button>
                 <button
                   onClick={(e) => handleCopySection("social", e)}
