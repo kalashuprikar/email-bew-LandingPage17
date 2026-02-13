@@ -35,6 +35,7 @@ export const FooterWithSocialBlockComponent: React.FC<
   const [hoveredSection, setHoveredSection] = React.useState<string | null>(null);
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
   const [sectionDuplicates, setSectionDuplicates] = React.useState<{ [key: string]: any[] }>({});
+  const [sectionOrder, setSectionOrder] = React.useState<string[]>(["social", "enterpriseName", "address", "subscriptionText", "unsubscribeLink"]);
 
   const handleFieldChange = (
     field: keyof typeof block,
@@ -109,6 +110,21 @@ export const FooterWithSocialBlockComponent: React.FC<
 
     onContentChange(sectionType, resetValue);
     setSelectedSection(null);
+  };
+
+  const handleMoveSection = (sectionType: string, direction: "up" | "down", e: React.MouseEvent) => {
+    e.stopPropagation();
+    const currentIndex = sectionOrder.indexOf(sectionType);
+    if (currentIndex === -1) return;
+
+    const newOrder = [...sectionOrder];
+    if (direction === "up" && currentIndex > 0) {
+      [newOrder[currentIndex], newOrder[currentIndex - 1]] = [newOrder[currentIndex - 1], newOrder[currentIndex]];
+      setSectionOrder(newOrder);
+    } else if (direction === "down" && currentIndex < newOrder.length - 1) {
+      [newOrder[currentIndex], newOrder[currentIndex + 1]] = [newOrder[currentIndex + 1], newOrder[currentIndex]];
+      setSectionOrder(newOrder);
+    }
   };
 
   return (
@@ -201,6 +217,22 @@ export const FooterWithSocialBlockComponent: React.FC<
             </div>
             {selectedElement === "social" && (
               <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 bg-white rounded-full px-2 py-1 shadow-lg">
+                <button
+                  onClick={(e) => handleMoveSection("social", "up", e)}
+                  title="Move up"
+                  className="p-1.5 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                  disabled={sectionOrder.indexOf("social") === 0}
+                >
+                  ↑
+                </button>
+                <button
+                  onClick={(e) => handleMoveSection("social", "down", e)}
+                  title="Move down"
+                  className="p-1.5 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                  disabled={sectionOrder.indexOf("social") === sectionOrder.length - 1}
+                >
+                  ↓
+                </button>
                 <button
                   onClick={(e) => handleCopySection("social", e)}
                   title="Copy section"
