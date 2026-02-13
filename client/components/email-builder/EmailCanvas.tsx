@@ -177,7 +177,7 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
                     (b as any).alignment === "left" || (b as any).alignment === "right"
                   );
                   const flexDirection = hasLeftRightAlignment ? "row" : "column";
-                  const justifyContent = hasLeftRightAlignment ? "space-between" : "center";
+                  const justifyContent = "center";
                   const alignItems = "center";
 
                   const groupId = `inline-group-${block.id}`;
@@ -205,7 +205,7 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
                         flexDirection: flexDirection,
                         alignItems: "center",
                         justifyContent: justifyContent,
-                        gap: "0",
+                        gap: "24px",
                         flexWrap: "nowrap",
                       }}>
                         {inlineBlocks.map((inlineBlock, i) => (
