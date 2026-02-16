@@ -22,14 +22,8 @@ export const EditableLink: React.FC<EditableLinkProps> = ({
   const [editLabel, setEditLabel] = useState(label);
   const [editHref, setEditHref] = useState(href);
 
-  const handleSave = () => {
+  const handleBlur = () => {
     onUpdate(editLabel, editHref);
-    setIsEditing(false);
-  };
-
-  const handleCancel = () => {
-    setEditLabel(label);
-    setEditHref(href);
     setIsEditing(false);
   };
 
@@ -52,6 +46,8 @@ export const EditableLink: React.FC<EditableLinkProps> = ({
           placeholder="Link text"
           value={editLabel}
           onChange={(e) => setEditLabel(e.target.value)}
+          onBlur={handleBlur}
+          autoFocus
           size="sm"
           className="text-xs"
         />
@@ -59,37 +55,22 @@ export const EditableLink: React.FC<EditableLinkProps> = ({
           placeholder="URL"
           value={editHref}
           onChange={(e) => setEditHref(e.target.value)}
+          onBlur={handleBlur}
           size="sm"
           className="text-xs"
         />
       </div>
-      <div className="flex gap-1">
+      {onDelete && (
         <Button
           size="sm"
-          className="h-6 px-2 text-xs"
-          onClick={handleSave}
+          variant="ghost"
+          className="h-6 w-6 p-0 flex-shrink-0"
+          onClick={onDelete}
+          title="Delete link"
         >
-          Save
+          <X className="w-3 h-3 text-red-500" />
         </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          className="h-6 px-2 text-xs"
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-        {onDelete && (
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-6 w-6 p-0"
-            onClick={onDelete}
-          >
-            <X className="w-3 h-3" />
-          </Button>
-        )}
-      </div>
+      )}
     </div>
   );
 };
