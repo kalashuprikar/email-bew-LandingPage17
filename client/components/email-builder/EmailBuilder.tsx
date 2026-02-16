@@ -73,6 +73,10 @@ export const EmailBuilder: React.FC<EmailBuilderProps> = ({
 
   // Auto-save to localStorage
   useEffect(() => {
+    console.log("Current template blocks:", template.blocks.length, template.blocks.map(b => ({ type: b.type, id: b.id })));
+  }, [template.blocks]);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       const updated = {
         ...template,
@@ -89,6 +93,7 @@ export const EmailBuilder: React.FC<EmailBuilderProps> = ({
 
   const handleAddBlock = useCallback(
     (block: ContentBlock, position?: number) => {
+      console.log("handleAddBlock called:", { blockType: block.type, blockId: block.id, position });
       setTemplate((prev) => {
         const newBlocks = [...prev.blocks];
         if (
@@ -97,8 +102,10 @@ export const EmailBuilder: React.FC<EmailBuilderProps> = ({
           position <= newBlocks.length
         ) {
           newBlocks.splice(position, 0, block);
+          console.log("Block added at position:", position, "Total blocks:", newBlocks.length);
         } else {
           newBlocks.push(block);
+          console.log("Block added at end. Total blocks:", newBlocks.length);
         }
         return {
           ...prev,

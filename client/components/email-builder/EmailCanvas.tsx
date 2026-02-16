@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDrop } from "react-dnd";
 import { Mail, Copy, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { EmailTemplate, ContentBlock } from "./types";
@@ -44,6 +45,16 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
 }) => {
   const [hoveredInlineGroup, setHoveredInlineGroup] = useState<string | null>(null);
   const [selectedInlineGroup, setSelectedInlineGroup] = useState<string | null>(null);
+
+  // Wrapper for onAddBlock to provide feedback
+  const handleAddBlockWithFeedback = (block: ContentBlock, position?: number) => {
+    console.log("handleAddBlockWithFeedback called:", { blockType: block.type, blockId: block.id, position });
+    const blockType = (block as any).type || "block";
+    toast.success(`Added ${blockType} block`, {
+      duration: 2000,
+    });
+    onAddBlock(block, position);
+  };
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ["template"],
@@ -134,24 +145,15 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
           }}
         >
           {template.blocks.length === 0 ? (
-            <div className="text-center py-16 text-gray-400">
-              <DropZone position={0} onBlockDrop={onAddBlock} />
-              <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <Mail className="w-8 h-8 text-gray-300" />
-                </div>
+            <div className="flex items-center justify-center py-16">
+              <div className="w-full max-w-md">
+                <DropZone position={0} onBlockDrop={handleAddBlockWithFeedback} isEmpty={true} />
               </div>
-              <p className="mb-2 text-gray-600 font-medium">
-                Drop content here
-              </p>
-              <p className="text-sm text-gray-400">
-                Drag blocks from the left sidebar to add them to your email
-              </p>
             </div>
           ) : (
             <div className="w-full flex flex-col">
               {/* Drop zone at the beginning */}
-              <DropZone position={0} onBlockDrop={onAddBlock} />
+              <DropZone position={0} onBlockDrop={handleAddBlockWithFeedback} />
 
               {template.blocks.map((block, index) => {
                 const isInlineDisplay = (block as any).displayMode === "inline";
@@ -314,7 +316,7 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
                         )}
                       </div>
                       {/* Drop zone after inline group */}
-                      <DropZone position={nextGroupPosition} onBlockDrop={onAddBlock} />
+                      <DropZone position={nextGroupPosition} onBlockDrop={handleAddBlockWithFeedback} />
                     </React.Fragment>
                   );
                 }
@@ -342,7 +344,7 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
                       onDelete={(blockId) => onDeleteBlock?.(blockId)}
                     />
                     {/* Drop zone after each block */}
-                    <DropZone position={index + 1} onBlockDrop={onAddBlock} />
+                    <DropZone position={index + 1} onBlockDrop={handleAddBlockWithFeedback} />
                   </React.Fragment>
                 );
               })}
