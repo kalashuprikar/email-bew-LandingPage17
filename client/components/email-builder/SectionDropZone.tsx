@@ -24,20 +24,17 @@ export const SectionDropZone: React.FC<SectionDropZoneProps> = ({
 }) => {
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
-      accept: ["block", "canvas-block"],
-      drop: (item: any) => {
-        // Handle block drop
+      accept: ["block"],
+      drop: (item: any, monitor) => {
+        // Handle block drop from BlocksPanel
         if (item.block) {
-          // New block from BlocksPanel
           onBlockDrop(item.block, sectionId, blockIndex);
-        } else if (item.blockId && item.index !== undefined) {
-          // Moved block from canvas
-          // This will be handled by a different handler
-          return;
+          // Return something to indicate the drop was handled
+          return { handled: true };
         }
       },
       collect: (monitor) => ({
-        isOver: !!monitor.isOver(),
+        isOver: !!monitor.isOver({ shallow: true }),
         canDrop: !!monitor.canDrop(),
       }),
     }),

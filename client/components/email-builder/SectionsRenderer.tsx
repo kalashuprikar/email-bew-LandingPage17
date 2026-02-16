@@ -15,7 +15,6 @@ interface SectionsRendererProps {
   onEditingBlockChange?: (id: string | null) => void;
   onFooterElementSelect?: (element: string | null) => void;
   onBlockDrop: (block: ContentBlock, sectionId: string, position?: number) => void;
-  onBlockMove: (blockId: string, fromSectionId: string, toSectionId: string, position: number) => void;
   onMoveBlockWithinSection: (blockIndex: number, hoverIndex: number, sectionId: string) => void;
   onDuplicateBlock: (block: ContentBlock, sectionId: string, position: number) => void;
   onDeleteBlock: (blockId: string, sectionId: string) => void;
