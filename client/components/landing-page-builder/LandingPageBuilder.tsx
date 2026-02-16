@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, Save } from "lucide-react";
+import { ChevronLeft, Save, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -19,6 +19,7 @@ import { DraggableLandingPagePreview } from "./DraggableLandingPagePreview";
 import { BlocksPanel } from "./BlocksPanel";
 import { SectionsPanel } from "./SectionsPanel";
 import { LandingPageSettingsPanel } from "./LandingPageSettingsPanel";
+import { LandingPagePreviewMode } from "./LandingPagePreviewMode";
 
 interface LandingPageBuilderProps {
   pageId?: string;
@@ -36,6 +37,7 @@ export const LandingPageBuilder: React.FC<LandingPageBuilderProps> = ({
   const [selectedLinkType, setSelectedLinkType] = useState<"navigation" | "quick" | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isSectionsPanelOpen, setIsSectionsPanelOpen] = useState(false);
+  const [previewMode, setPreviewMode] = useState(false);
 
   useEffect(() => {
     if (pageId) {
@@ -207,6 +209,16 @@ export const LandingPageBuilder: React.FC<LandingPageBuilderProps> = ({
   const selectedBlock =
     page.blocks.find((b) => b.id === selectedBlockId) || null;
 
+  // If in preview mode, show the preview component
+  if (previewMode) {
+    return (
+      <LandingPagePreviewMode
+        page={page}
+        onBack={() => setPreviewMode(false)}
+      />
+    );
+  }
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Left Sidebar - Blocks Panel */}
@@ -216,7 +228,13 @@ export const LandingPageBuilder: React.FC<LandingPageBuilderProps> = ({
             variant="ghost"
             size="sm"
             className="w-full justify-start text-gray-600 hover:text-gray-900"
-            onClick={onBack}
+            onClick={() => {
+              if (previewMode) {
+                setPreviewMode(false);
+              } else {
+                onBack();
+              }
+            }}
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Back
@@ -250,14 +268,25 @@ export const LandingPageBuilder: React.FC<LandingPageBuilderProps> = ({
               className="text-lg font-semibold border-0 focus-visible:ring-0 px-0"
             />
           </div>
-          <Button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="bg-valasys-orange hover:bg-orange-600"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {isSaving ? "Saving..." : "Save"}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant={previewMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => setPreviewMode(!previewMode)}
+              className={previewMode ? "bg-valasys-orange text-white" : ""}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              Preview
+            </Button>
+            <Button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="bg-valasys-orange hover:bg-orange-600"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {isSaving ? "Saving..." : "Save"}
+            </Button>
+          </div>
         </div>
 
         {/* Preview Area */}
