@@ -323,8 +323,6 @@ export const HeroBlockPreview: React.FC<BlockPreviewProps> = ({
             style={{
               width: props.headlineWidth || "100%",
               height: props.headlineHeight || "auto",
-              display: "flex",
-              alignItems: "center",
             }}
             autoFocus
             onFocus={(e) => {
@@ -339,8 +337,6 @@ export const HeroBlockPreview: React.FC<BlockPreviewProps> = ({
               wordBreak: "break-word",
               width: props.headlineWidth || "100%",
               height: props.headlineHeight || "auto",
-              display: "flex",
-              alignItems: "center",
             }}
             onDoubleClick={(e) => {
               e.stopPropagation();
@@ -419,8 +415,6 @@ export const HeroBlockPreview: React.FC<BlockPreviewProps> = ({
             style={{
               width: props.subheadingWidth || "100%",
               height: props.subheadingHeight || "auto",
-              display: "flex",
-              alignItems: "center",
             }}
             autoFocus
             onFocus={(e) => {
@@ -435,8 +429,6 @@ export const HeroBlockPreview: React.FC<BlockPreviewProps> = ({
               wordBreak: "break-word",
               width: props.subheadingWidth || "100%",
               height: props.subheadingHeight || "auto",
-              display: "flex",
-              alignItems: "center",
             }}
             onDoubleClick={(e) => {
               e.stopPropagation();

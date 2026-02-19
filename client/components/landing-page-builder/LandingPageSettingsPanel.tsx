@@ -104,23 +104,43 @@ export const LandingPageSettingsPanel: React.FC<
                   <Label className="text-sm font-medium block mb-3">Size & Spacing</Label>
                   <div>
                     <Label className="text-xs text-gray-600 mb-1 block">Width</Label>
-                    <Input
-                      type="text"
-                      value={localProps.headlineWidth || "100%"}
-                      onChange={(e) => updateProperty("headlineWidth", e.target.value)}
-                      placeholder="100%, 500px, etc."
-                      className="w-full"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        value={localProps.headlineWidth || "100%"}
+                        onChange={(e) => updateProperty("headlineWidth", e.target.value)}
+                        placeholder="100%, 500px, etc."
+                        className="flex-1"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => updateProperty("headlineWidth", "100%")}
+                        className="px-3"
+                      >
+                        Reset
+                      </Button>
+                    </div>
                   </div>
                   <div className="mt-3">
                     <Label className="text-xs text-gray-600 mb-1 block">Height</Label>
-                    <Input
-                      type="text"
-                      value={localProps.headlineHeight || "auto"}
-                      onChange={(e) => updateProperty("headlineHeight", e.target.value)}
-                      placeholder="auto, 200px, etc."
-                      className="w-full"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        value={localProps.headlineHeight || "auto"}
+                        onChange={(e) => updateProperty("headlineHeight", e.target.value)}
+                        placeholder="auto, 200px, etc."
+                        className="flex-1"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => updateProperty("headlineHeight", "auto")}
+                        className="px-3"
+                      >
+                        Reset
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </>
@@ -158,23 +178,43 @@ export const LandingPageSettingsPanel: React.FC<
                   <Label className="text-sm font-medium block mb-3">Size & Spacing</Label>
                   <div>
                     <Label className="text-xs text-gray-600 mb-1 block">Width</Label>
-                    <Input
-                      type="text"
-                      value={localProps.subheadingWidth || "100%"}
-                      onChange={(e) => updateProperty("subheadingWidth", e.target.value)}
-                      placeholder="100%, 500px, etc."
-                      className="w-full"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        value={localProps.subheadingWidth || "100%"}
+                        onChange={(e) => updateProperty("subheadingWidth", e.target.value)}
+                        placeholder="100%, 500px, etc."
+                        className="flex-1"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => updateProperty("subheadingWidth", "100%")}
+                        className="px-3"
+                      >
+                        Reset
+                      </Button>
+                    </div>
                   </div>
                   <div className="mt-3">
                     <Label className="text-xs text-gray-600 mb-1 block">Height</Label>
-                    <Input
-                      type="text"
-                      value={localProps.subheadingHeight || "auto"}
-                      onChange={(e) => updateProperty("subheadingHeight", e.target.value)}
-                      placeholder="auto, 100px, etc."
-                      className="w-full"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        value={localProps.subheadingHeight || "auto"}
+                        onChange={(e) => updateProperty("subheadingHeight", e.target.value)}
+                        placeholder="auto, 100px, etc."
+                        className="flex-1"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => updateProperty("subheadingHeight", "auto")}
+                        className="px-3"
+                      >
+                        Reset
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </>
