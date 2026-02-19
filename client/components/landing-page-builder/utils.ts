@@ -30,6 +30,7 @@ export const createHeroBlock = (): LandingPageBlock => ({
     ctaButtonText: "Start Your Free Trial",
     ctaButtonLink: "#signup",
     ctaButtonColor: "#FF6A00",
+    width: "100%",
     minHeight: "500px",
   },
 });
