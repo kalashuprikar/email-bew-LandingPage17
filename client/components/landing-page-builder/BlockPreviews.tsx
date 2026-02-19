@@ -319,7 +319,13 @@ export const HeroBlockPreview: React.FC<BlockPreviewProps> = ({
               }
             }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full text-2xl md:text-5xl font-bold text-gray-900 px-2 py-1 focus:outline-none bg-transparent resize-none overflow-hidden whitespace-pre-wrap break-words"
+            className="text-2xl md:text-5xl font-bold text-gray-900 px-2 py-1 focus:outline-none bg-transparent resize-none overflow-hidden whitespace-pre-wrap break-words"
+            style={{
+              width: props.headlineWidth || "100%",
+              height: props.headlineHeight || "auto",
+              display: "flex",
+              alignItems: "center",
+            }}
             autoFocus
             onFocus={(e) => {
               setTimeout(() => adjustTextareaHeight(e.target as HTMLTextAreaElement), 0);
@@ -328,7 +334,14 @@ export const HeroBlockPreview: React.FC<BlockPreviewProps> = ({
         ) : (
           <h1
             className="text-2xl md:text-5xl font-bold cursor-text break-words"
-            style={{ color: props.headlineColor || "#1f2937", wordBreak: "break-word" }}
+            style={{
+              color: props.headlineColor || "#1f2937",
+              wordBreak: "break-word",
+              width: props.headlineWidth || "100%",
+              height: props.headlineHeight || "auto",
+              display: "flex",
+              alignItems: "center",
+            }}
             onDoubleClick={(e) => {
               e.stopPropagation();
               setEditHeadingText(props.headline || "");
@@ -402,7 +415,13 @@ export const HeroBlockPreview: React.FC<BlockPreviewProps> = ({
               }
             }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full text-sm md:text-xl text-gray-600 px-2 py-1 focus:outline-none bg-transparent resize-none overflow-hidden whitespace-pre-wrap break-words"
+            className="text-sm md:text-xl text-gray-600 px-2 py-1 focus:outline-none bg-transparent resize-none overflow-hidden whitespace-pre-wrap break-words"
+            style={{
+              width: props.subheadingWidth || "100%",
+              height: props.subheadingHeight || "auto",
+              display: "flex",
+              alignItems: "center",
+            }}
             autoFocus
             onFocus={(e) => {
               setTimeout(() => adjustTextareaHeight(e.target as HTMLTextAreaElement), 0);
@@ -411,7 +430,14 @@ export const HeroBlockPreview: React.FC<BlockPreviewProps> = ({
         ) : (
           <p
             className="text-sm md:text-xl cursor-text break-words"
-            style={{ color: props.subheadingColor || "#4b5563", wordBreak: "break-word" }}
+            style={{
+              color: props.subheadingColor || "#4b5563",
+              wordBreak: "break-word",
+              width: props.subheadingWidth || "100%",
+              height: props.subheadingHeight || "auto",
+              display: "flex",
+              alignItems: "center",
+            }}
             onDoubleClick={(e) => {
               e.stopPropagation();
               setEditSubheadingText(props.subheading || "");
