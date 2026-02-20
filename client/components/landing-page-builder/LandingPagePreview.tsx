@@ -94,11 +94,7 @@ export const LandingPagePreview: React.FC<LandingPagePreviewProps> = ({
     return (
       <div
         key={block.id}
-        className={`relative transition-all rounded cursor-pointer group ${
-          isSelected
-            ? "ring-2 ring-valasys-orange"
-            : ""
-        }`}
+        className="relative transition-all rounded cursor-pointer group"
         onClick={() => onSelectBlock(block.id)}
       >
         {blockContent}
